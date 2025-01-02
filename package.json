@@ -1,8 +1,6 @@
 {
   "type": "module",
   "dependencies": {
-    "clipboard-sys": "^1.2.1",
-    "electron": "^33.2.1",
     "node-powershell": "5.0.1",
     "selenium-webdriver": "^4.27.0",
     "uiohook-napi": "^1.5.4"
