@@ -3,4 +3,4 @@
 !src/
 !src/*
 !src/json/*
-!package*.json
+!package.json
