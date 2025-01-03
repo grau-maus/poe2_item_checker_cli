@@ -129,6 +129,7 @@ class ItemDataWatcher {
                   ) {
                     const strVals = lineItem.match(/\d+(\.\d+)?/g);
                     let isCompared = false;
+                    let isSingleLICompared = false;
                     let prevSingleVal = 0;
                     
                     sanitizedModTxt = lineItem;
@@ -263,6 +264,7 @@ class ItemDataWatcher {
                         )
                       ) {
                         isCompared = true;
+                        isSingleLICompared = true;
                         modScore.push(
                           {
                             text: lineItem,
@@ -276,6 +278,7 @@ class ItemDataWatcher {
                         break;
                       } else if (itemModLowVal < currModLowRangeLow) {
                         isCompared = true;
+                        isSingleLICompared = true;
                         modScore.push(
                           {
                             text: lineItem,
@@ -292,7 +295,7 @@ class ItemDataWatcher {
                       prevSingleVal = currModLowRangeLow;
                     }
 
-                    if (!isCompared) {
+                    if (!isCompared || !isSingleLICompared) {
                       modScore.push(
                         {
                           text: lineItem,
@@ -314,7 +317,7 @@ class ItemDataWatcher {
                   prevLI = {
                     lineItem,
                     sanitizedModTxt,
-                    values
+                    values: [...values]
                   }
                   sanitizedModTxt = '';
                   values.length = 0;
