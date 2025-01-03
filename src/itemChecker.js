@@ -123,6 +123,7 @@ class ItemDataWatcher {
                     && lineItem != '--------' 
                     && !lineItem.includes('(implicit)')
                     && !lineItem.includes('Note:')
+                    && !lineItem.includes('(rune)')
                     && lineItem !== 'Corrupted'
                     && lineItem !== 'Can only be equipped if you are wielding a Bow.'
                   ) {
