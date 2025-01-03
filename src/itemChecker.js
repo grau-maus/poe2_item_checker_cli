@@ -18,35 +18,35 @@ const MULTI_MOD_SET_2 = new Set(
 );
 const MULTI_MOD_SET_3 = new Set(
   [
-    '%increasedPhysicalDamage+toAccuracyRating',
-    '%increasedManaRegenerationRate%increasedLightRadius',
-    '%increasedSpirit+tomaximumMana',
-    '%increasedSpellDamage+tomaximumMana',
     '+toArmour+toEvasionRating',
-    '+toArmour+tomaximumEnergyShield',
-    '+toEvasionRating+tomaximumEnergyShield',
+    '+toArmour%increasedArmour',
+    '%increasedSpirit+tomaximumMana',
     '%increasedArmour+tomaximumLife',
+    '%increasedArmour+tomaximumMana',
+    '+toArmour+tomaximumEnergyShield',
+    '%increasedArmour+toStunThreshold',
+    '%increasedSpellDamage+tomaximumMana',
+    '%increasedEnergyShield+tomaximumMana',
     '%increasedEnergyShield+tomaximumLife',
     '%increasedEvasionRating+tomaximumLife',
-    '%increasedArmourandEvasion+tomaximumLife',
-    '%increasedArmourandEnergyShield+tomaximumLife',
-    '%increasedEvasionandEnergyShield+tomaximumLife',
-    '%increasedArmour+toStunThreshold',
+    '%increasedEvasionRating+tomaximumMana',
+    '+toEvasionRating+tomaximumEnergyShield',
     '%increasedEnergyShield+toStunThreshold',
+    'toEvasionRating%increasedEvasionRating',
     '%increasedEvasionRating+toStunThreshold',
+    '%increasedArmourandEvasion+tomaximumLife',
+    '%increasedArmourandEvasion+tomaximumMana',
+    '%increasedPhysicalDamage+toAccuracyRating',
     '%increasedArmourandEvasion+toStunThreshold',
+    '+tomaximumEnergyShield%increasedEnergyShield',
+    '%increasedArmourandEnergyShield+tomaximumLife',
+    '%increasedArmourandEnergyShield+tomaximumMana',
+    '%increasedEvasionandEnergyShield+tomaximumLife',
+    '%increasedEvasionandEnergyShield+tomaximumMana',
     '%increasedArmourandEnergyShield+toStunThreshold',
     '%increasedEvasionandEnergyShield+toStunThreshold',
-    '+toArmour%increasedArmour',
-    '+toArmour+toEvasionRating%increasedArmourandEvasion',
-    'toEvasionRating%increasedEvasionRating',
-    '+tomaximumEnergyShield%increasedEnergyShield',
-    '%increasedArmour+tomaximumMana',
-    '%increasedEvasionRating+tomaximumMana',
-    '%increasedEnergyShield+tomaximumMana',
-    '%increasedArmourandEvasion+tomaximumMana',
-    '%increasedArmourandEnergyShield+tomaximumMana',
-    '%increasedEvasionandEnergyShield+tomaximumMana'
+    '%increasedManaRegenerationRate%increasedLightRadius',
+    '+toArmour+toEvasionRating%increasedArmourandEvasion'
   ]
 );
 
@@ -153,7 +153,8 @@ class ItemDataWatcher {
                       const multiRefMods = multiModData?.mods;
                       const multiModTiers = multiModData?.tiers;
 
-                      if (multiRefMods) {
+                      if (multiRefMods && prevLI && prevSanitizedModTxt) {
+                        console.log(multiModKey);
                         for (let i = 0; i < multiRefMods.length; i++) {
                           const currMod = multiRefMods[i];
                           const prevIValues = prevLI.values;
@@ -161,7 +162,7 @@ class ItemDataWatcher {
                           const currIValues = values;
                           const currIModTxt = lineItem;
                           const multiModKey = prevLI.sanitizedModTxt + sanitizedModTxt;
-  
+                          
                           if (MULTI_MOD_SET_1.has(multiModKey)) {
                             // DO LOGIC
                           } else if (MULTI_MOD_SET_2.has(multiModKey)) {
@@ -177,10 +178,20 @@ class ItemDataWatcher {
                             const currModLowRangeHigh2 = secondRange.low[1];
   
                             if (
-                              prevIVal >= currModLowRangeLow1 
-                              && prevIVal <= currModLowRangeHigh1
-                              && currIVal >= currModLowRangeLow2
-                              && currIVal <= currModLowRangeHigh2
+                              (
+                                prevIVal >= currModLowRangeLow1 
+                                && prevIVal <= currModLowRangeHigh1
+                                && currIVal >= currModLowRangeLow2
+                                && currIVal <= currModLowRangeHigh2
+                              ) || (
+                                (
+                                  currIVal >= currModLowRangeLow2
+                                  && currIVal <= currModLowRangeHigh2
+                                ) || (
+                                  prevIVal >= currModLowRangeLow1 
+                                  && prevIVal <= currModLowRangeHigh1
+                                )
+                              )
                             ) {
                               isCompared = true;
                               multiModScore.push(
@@ -299,16 +310,11 @@ class ItemDataWatcher {
                     itemLevel = Number(lineItem.split(ITEM_LEVEL_STR)[1]);
                   }
 
-                  if (prevLI === undefined) {
-                    prevLI = {
-                      lineItem,
-                      sanitizedModTxt,
-                      values
-                    }
-                  } else {
-                    prevLI = undefined;
+                  prevLI = {
+                    lineItem,
+                    sanitizedModTxt,
+                    values
                   }
-
                   sanitizedModTxt = '';
                   values.length = 0;
                 }
