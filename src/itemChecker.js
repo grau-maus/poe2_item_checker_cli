@@ -5,6 +5,50 @@ import * as modData from './json/parsedModData4.json' with { type: 'json' };
 const GLOBAL_MOD_DATA = modData.default;
 const ITEM_CLASS_STR = 'Item Class: ';
 const ITEM_LEVEL_STR = 'Item Level: ';
+const MULTI_MOD_SET_1 = new Set(
+  [
+    '+toAccuracyRating%increasedLightRadius'
+  ]
+);
+const MULTI_MOD_SET_2 = new Set(
+  [
+    '+toArmour+tomaximumEnergyShield%increasedArmourandEnergyShield',
+    '+toEvasionRating+tomaximumEnergyShield%increasedEvasionandEnergyShield'
+  ]
+);
+const MULTI_MOD_SET_3 = new Set(
+  [
+    '%increasedPhysicalDamage+toAccuracyRating',
+    '%increasedManaRegenerationRate%increasedLightRadius',
+    '%increasedSpirit+tomaximumMana',
+    '%increasedSpellDamage+tomaximumMana',
+    '+toArmour+toEvasionRating',
+    '+toArmour+tomaximumEnergyShield',
+    '+toEvasionRating+tomaximumEnergyShield',
+    '%increasedArmour+tomaximumLife',
+    '%increasedEnergyShield+tomaximumLife',
+    '%increasedEvasionRating+tomaximumLife',
+    '%increasedArmourandEvasion+tomaximumLife',
+    '%increasedArmourandEnergyShield+tomaximumLife',
+    '%increasedEvasionandEnergyShield+tomaximumLife',
+    '%increasedArmour+toStunThreshold',
+    '%increasedEnergyShield+toStunThreshold',
+    '%increasedEvasionRating+toStunThreshold',
+    '%increasedArmourandEvasion+toStunThreshold',
+    '%increasedArmourandEnergyShield+toStunThreshold',
+    '%increasedEvasionandEnergyShield+toStunThreshold',
+    '+toArmour%increasedArmour',
+    '+toArmour+toEvasionRating%increasedArmourandEvasion',
+    'toEvasionRating%increasedEvasionRating',
+    '+tomaximumEnergyShield%increasedEnergyShield',
+    '%increasedArmour+tomaximumMana',
+    '%increasedEvasionRating+tomaximumMana',
+    '%increasedEnergyShield+tomaximumMana',
+    '%increasedArmourandEvasion+tomaximumMana',
+    '%increasedArmourandEnergyShield+tomaximumMana',
+    '%increasedEvasionandEnergyShield+tomaximumMana'
+  ]
+);
 
 class ItemDataWatcher {
   isWatching = false;
@@ -55,10 +99,14 @@ class ItemDataWatcher {
               if (this.isPoeItem(clipboardContent)) {
                 const itemData = clipboardContent.split('\r\n');
                 const modScore = [];
+                const multiModScore = [];
+                const values = [];
                 let itemClass = '';
                 let itemName = '';
+                let sanitizedModTxt = '';
                 let itemLevel = 0;
                 let parsedRarity = false;
+                let prevLI;
 
                 for (const lineItem of itemData) {
                   // console.log(lineItem);
@@ -78,11 +126,11 @@ class ItemDataWatcher {
                     && lineItem !== 'Corrupted'
                     && lineItem !== 'Can only be equipped if you are wielding a Bow.'
                   ) {
-                    const values = [];
                     const strVals = lineItem.match(/\d+(\.\d+)?/g);
-                    let sanitizedModTxt = lineItem;
                     let isCompared = false;
                     let prevSingleVal = 0;
+                    
+                    sanitizedModTxt = lineItem;
 
                     if (strVals) {
                       for (const strVal of strVals) {
@@ -93,8 +141,64 @@ class ItemDataWatcher {
 
                     sanitizedModTxt = sanitizedModTxt.replaceAll(' ', '');
 
-                    const refMods = GLOBAL_MOD_DATA[itemClass][sanitizedModTxt].mods;
-                    const tiers = GLOBAL_MOD_DATA[itemClass][sanitizedModTxt].tiers;
+                    const itemClassObj = GLOBAL_MOD_DATA[itemClass];
+                    const modData = itemClassObj[sanitizedModTxt];
+                    const refMods = modData.mods;
+                    const tiers = modData.tiers;
+
+                    if (prevLI !== undefined) {
+                      const prevSanitizedModTxt = prevLI.sanitizedModTxt;
+                      const multiModKey = prevSanitizedModTxt + sanitizedModTxt;
+                      const multiModData = itemClassObj[multiModKey];
+                      const multiRefMods = multiModData?.mods;
+                      const multiModTiers = multiModData?.tiers;
+
+                      if (multiRefMods) {
+                        for (let i = 0; i < multiRefMods.length; i++) {
+                          const currMod = multiRefMods[i];
+                          const prevIValues = prevLI.values;
+                          const prevIModTxt = prevLI.lineItem;
+                          const currIValues = values;
+                          const currIModTxt = lineItem;
+                          const multiModKey = prevLI.sanitizedModTxt + sanitizedModTxt;
+  
+                          if (MULTI_MOD_SET_1.has(multiModKey)) {
+                            // DO LOGIC
+                          } else if (MULTI_MOD_SET_2.has(multiModKey)) {
+                            // DO LOGIC
+                          } else if (MULTI_MOD_SET_3.has(multiModKey)) {
+                            const prevIVal = prevIValues[0];
+                            const currIVal = currIValues[0];
+                            const currModRanges = currMod.ranges;
+                            const {firstRange, secondRange} = currModRanges;
+                            const currModLowRangeLow1 = firstRange.low[0];
+                            const currModLowRangeHigh1 = firstRange.low[1];
+                            const currModLowRangeLow2 = secondRange.low[0];
+                            const currModLowRangeHigh2 = secondRange.low[1];
+  
+                            if (
+                              prevIVal >= currModLowRangeLow1 
+                              && prevIVal <= currModLowRangeHigh1
+                              && currIVal >= currModLowRangeLow2
+                              && currIVal <= currModLowRangeHigh2
+                            ) {
+                              isCompared = true;
+                              multiModScore.push(
+                                {
+                                  text: `${prevIModTxt} AND ${currIModTxt}`,
+                                  score: `${i + 1}/${this.getHighestPossibleTier({
+                                    tiers: multiModTiers,
+                                    itemLevel
+                                  })}`
+                                }
+                              );
+  
+                              break;
+                            }
+                          }
+                        }
+                      }
+                    }
 
                     if (!refMods) {
                       throw new Error('Unable to reference mod data...');
@@ -102,85 +206,78 @@ class ItemDataWatcher {
 
                     for (let i = 0; i < refMods.length; i++) {
                       const currMod = refMods[i];
-                      const isMultiMod = currMod.isMultiMod;
                       const itemModLowVal = values[0];
                       const itemModHighVal = values.length > 1 ? values[1] : null;
+                      const isSingleVal = currMod.ranges.hasSingleVal;
+                      const currModLowRanges = currMod.ranges.low;
+                      const currModHighRanges = currMod.ranges.high;
+                      const currModLowRangeLow = currModLowRanges[0];
+                      const currModLowRangeHigh = currModLowRanges.length > 1 ? currModLowRanges[1] : null;
+                      const isHighest = itemModLowVal > prevSingleVal && itemModLowVal <= currModLowRangeLow;
+                      const validSingleNumComp = (
+                        itemModHighVal === null 
+                        && currModLowRangeHigh === null 
+                        && isSingleVal
+                        && (
+                          (
+                            itemModLowVal >= prevSingleVal
+                            && itemModLowVal < currModLowRangeLow
+                          ) || isHighest
+                        )
+                      );
+                      let currModHighRangeLow;
+                      let currModHighRangeHigh;
 
-                      if (isMultiMod) {
-                        // TODO: HANDLE MULTI MOD COMPARE
-                        throw new Error('CONTAINS SPECIAL MOD');
-                      } else {
-                        const isSingleVal = currMod.ranges.hasSingleVal;
-                        const currModLowRanges = currMod.ranges.low;
-                        const currModHighRanges = currMod.ranges.high;
-                        const currModLowRangeLow = currModLowRanges[0];
-                        const currModLowRangeHigh = currModLowRanges.length > 1 ? currModLowRanges[1] : null;
-                        const isHighest = itemModLowVal > prevSingleVal && itemModLowVal <= currModLowRangeLow;
-                        const validSingleNumComp = (
-                          itemModHighVal === null 
-                          && currModLowRangeHigh === null 
-                          && isSingleVal
+                      if (!isSingleVal) {
+                        currModHighRangeLow = currModHighRanges[0];
+                        currModHighRangeHigh = currModHighRanges.length > 1 ? currModHighRanges[1] : null;
+                      }
+
+                      if (
+                        validSingleNumComp
+                        || (
+                          itemModLowVal >= currModLowRangeLow 
+                          && currModLowRangeHigh && itemModLowVal <= currModLowRangeHigh
                           && (
-                            (
-                              itemModLowVal >= prevSingleVal
-                              && itemModLowVal < currModLowRangeLow
-                            ) || isHighest
-                          )
-                        );
-                        let currModHighRangeLow;
-                        let currModHighRangeHigh;
-
-                        if (!isSingleVal) {
-                          currModHighRangeLow = currModHighRanges[0];
-                          currModHighRangeHigh = currModHighRanges.length > 1 ? currModHighRanges[1] : null;
-                        }
-
-                        if (
-                          validSingleNumComp
-                          || (
-                            itemModLowVal >= currModLowRangeLow 
-                            && currModLowRangeHigh && itemModLowVal <= currModLowRangeHigh
-                            && (
-                              isSingleVal
-                              || (
-                                itemModHighVal
-                                && currModHighRangeLow
-                                && itemModHighVal >= currModHighRangeLow
-                                && currModHighRangeHigh
-                                && itemModHighVal <= currModHighRangeHigh
-                              )
+                            isSingleVal
+                            || (
+                              itemModHighVal
+                              && currModHighRangeLow
+                              && itemModHighVal >= currModHighRangeLow
+                              && currModHighRangeHigh
+                              && itemModHighVal <= currModHighRangeHigh
                             )
                           )
-                        ) {
-                          isCompared = true;
-                          modScore.push(
-                            {
-                              text: lineItem,
-                              score: `${i + (validSingleNumComp ? (isHighest ? 1 : 0) : 1)}/${this.getHighestPossibleTier({
-                                tiers,
-                                itemLevel
-                              })}`
-                            }
-                          );
+                        )
+                      ) {
+                        isCompared = true;
+                        modScore.push(
+                          {
+                            text: lineItem,
+                            score: `${i + (validSingleNumComp ? (isHighest ? 1 : 0) : 1)}/${this.getHighestPossibleTier({
+                              tiers,
+                              itemLevel
+                            })}`
+                          }
+                        );
 
-                          break;
-                        } else if (itemModLowVal < currModLowRangeLow) {
-                          isCompared = true;
-                          modScore.push(
-                            {
-                              text: lineItem,
-                              score: `0/${this.getHighestPossibleTier({
-                                tiers,
-                                itemLevel
-                              })}`
-                            }
-                          );
+                        break;
+                      } else if (itemModLowVal < currModLowRangeLow) {
+                        isCompared = true;
+                        modScore.push(
+                          {
+                            text: lineItem,
+                            score: `0/${this.getHighestPossibleTier({
+                              tiers,
+                              itemLevel
+                            })}`
+                          }
+                        );
 
-                          break;
-                        }
-
-                        prevSingleVal = currModLowRangeLow;
+                        break;
                       }
+
+                      prevSingleVal = currModLowRangeLow;
                     }
 
                     if (!isCompared) {
@@ -193,8 +290,6 @@ class ItemDataWatcher {
                           })}`
                         }
                       );
-                      // console.log(lineItem);
-                      // throw new Error('Unable to find mod to compare with');
                     }
                   }
                   if (lineItem.includes(ITEM_CLASS_STR)) {
@@ -203,6 +298,19 @@ class ItemDataWatcher {
                   if (lineItem.includes(ITEM_LEVEL_STR)) {
                     itemLevel = Number(lineItem.split(ITEM_LEVEL_STR)[1]);
                   }
+
+                  if (prevLI === undefined) {
+                    prevLI = {
+                      lineItem,
+                      sanitizedModTxt,
+                      values
+                    }
+                  } else {
+                    prevLI = undefined;
+                  }
+
+                  sanitizedModTxt = '';
+                  values.length = 0;
                 }
 
                 console.log('----------');
@@ -211,6 +319,16 @@ class ItemDataWatcher {
                   const {text, score} = scoreData;
 
                   console.log(`${score}: ${text}`);
+                }
+
+                if (multiModScore.length) {
+                  console.log('---');
+                  console.log('"Multi-mod" score:');
+                  for (const scoreData of multiModScore) {
+                    const {text, score} = scoreData;
+
+                    console.log(`${score}: ${text}`);
+                  }
                 }
                 console.log('----------');
               } else {
