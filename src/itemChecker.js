@@ -7,7 +7,8 @@ const ITEM_CLASS_STR = 'Item Class: ';
 const ITEM_LEVEL_STR = 'Item Level: ';
 const MULTI_MOD_SET_1 = new Set(
   [
-    '+toAccuracyRating%increasedLightRadius'
+    '+toAccuracyRating%increasedLightRadius',
+    '%increasedManaRegenerationRate%increasedLightRadius'
   ]
 );
 const MULTI_MOD_SET_2 = new Set(
@@ -45,7 +46,6 @@ const MULTI_MOD_SET_3 = new Set(
     '%increasedEvasionandEnergyShield+tomaximumMana',
     '%increasedArmourandEnergyShield+toStunThreshold',
     '%increasedEvasionandEnergyShield+toStunThreshold',
-    '%increasedManaRegenerationRate%increasedLightRadius',
     '+toArmour+toEvasionRating%increasedArmourandEvasion'
   ]
 );
@@ -166,7 +166,41 @@ class ItemDataWatcher {
                           const multiModKey = prevLI.sanitizedModTxt + sanitizedModTxt;
                           
                           if (MULTI_MOD_SET_1.has(multiModKey)) {
-                            // DO LOGIC
+                            const prevIVal = prevIValues[0];
+                            const currIVal = currIValues[0];
+                            const currModRanges = currMod.ranges;
+                            const {firstRange, secondRange} = currModRanges;
+                            const currModLowRangeLow1 = firstRange.low[0];
+                            const currModLowRangeHigh1 = firstRange.low[1];
+                            const currModLowRangeLow2 = secondRange.low[0];
+  
+                            if (
+                              (
+                                prevIVal >= currModLowRangeLow1 
+                                && prevIVal <= currModLowRangeHigh1
+                                && currIVal === currModLowRangeLow2
+                              ) || (
+                                (
+                                  currIVal === currModLowRangeLow2
+                                ) || (
+                                  prevIVal >= currModLowRangeLow1 
+                                  && prevIVal <= currModLowRangeHigh1
+                                )
+                              )
+                            ) {
+                              isCompared = true;
+                              multiModScore.push(
+                                {
+                                  text: `${prevIModTxt} AND ${currIModTxt}`,
+                                  score: `${i + 1}/${this.getHighestPossibleTier({
+                                    tiers: multiModTiers,
+                                    itemLevel
+                                  })}`
+                                }
+                              );
+  
+                              break;
+                            }
                           } else if (MULTI_MOD_SET_2.has(multiModKey)) {
                             // DO LOGIC
                           } else if (MULTI_MOD_SET_3.has(multiModKey)) {
