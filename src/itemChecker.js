@@ -61,7 +61,7 @@ class ItemDataWatcher {
 
   async start() {
     console.log('Starting item data watcher...');
-    console.log('Press Ctrl + Alt + C while hovering over an item to capture its data');
+    console.log('Press Ctrl + C while hovering over an item to capture its data');
     console.log('Press Ctrl + Q to quit');
 
     this.isWatching = true;
@@ -83,7 +83,7 @@ class ItemDataWatcher {
       return;
     }
 
-    if (event.ctrlKey && event.altKey && event.keycode === UiohookKey.C) {
+    if (event.ctrlKey && event.keycode === UiohookKey.C) {
       setTimeout(async () => {
         try {
           const cbPromise = PowerShell.$`Get-Clipboard`;
@@ -152,9 +152,9 @@ class ItemDataWatcher {
                       const multiModData = itemClassObj[multiModKey];
                       const multiRefMods = multiModData?.mods;
                       const multiModTiers = multiModData?.tiers;
+                      // console.log(multiModKey);
 
                       if (multiRefMods && prevLI && prevSanitizedModTxt) {
-                        console.log(multiModKey);
                         for (let i = 0; i < multiRefMods.length; i++) {
                           const currMod = multiRefMods[i];
                           const prevIValues = prevLI.values;
