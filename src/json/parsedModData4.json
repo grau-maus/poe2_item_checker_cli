@@ -69480,6 +69480,168 @@
                 }
             ]
         },
+        "%reducedBleedingDurationonyou": {
+            "tiers": [
+                21,
+                37,
+                50,
+                64,
+                76
+            ],
+            "mods": [
+                {
+                    "itemLevel": 21,
+                    "oldDescription": "(36–40)% reduced Bleeding Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            36,
+                            40
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 37,
+                    "oldDescription": "(41–45)% reduced Bleeding Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            41,
+                            45
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 50,
+                    "oldDescription": "(46–50)% reduced Bleeding Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            46,
+                            50
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 64,
+                    "oldDescription": "(51–55)% reduced Bleeding Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            51,
+                            55
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 76,
+                    "oldDescription": "(56–60)% reduced Bleeding Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            56,
+                            60
+                        ],
+                        "high": []
+                    }
+                }
+            ]
+        },
+        "%reducedPoisonDurationonyou": {
+            "tiers": [
+                21,
+                37,
+                50,
+                64,
+                76
+            ],
+            "mods": [
+                {
+                    "itemLevel": 21,
+                    "oldDescription": "(36–40)% reduced Poison Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            36,
+                            40
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 37,
+                    "oldDescription": "(41–45)% reduced Poison Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            41,
+                            45
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 50,
+                    "oldDescription": "(46–50)% reduced Poison Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            46,
+                            50
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 64,
+                    "oldDescription": "(51–55)% reduced Poison Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            51,
+                            55
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 76,
+                    "oldDescription": "(56–60)% reduced Poison Duration on you",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            56,
+                            60
+                        ],
+                        "high": []
+                    }
+                }
+            ]
+        },
         "%reducedIgniteDurationonyou": {
             "tiers": [
                 21,
