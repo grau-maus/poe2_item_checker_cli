@@ -145,8 +145,8 @@ class ItemDataWatcher {
 
                     const itemClassObj = GLOBAL_MOD_DATA[itemClass];
                     const modData = itemClassObj[sanitizedModTxt];
-                    const refMods = modData.mods;
-                    const tiers = modData.tiers;
+                    const refMods = modData?.mods ?? [];
+                    const tiers = modData?.tiers ?? [];
 
                     if (prevLI !== undefined) {
                       const prevSanitizedModTxt = prevLI.sanitizedModTxt;
@@ -211,10 +211,6 @@ class ItemDataWatcher {
                           }
                         }
                       }
-                    }
-
-                    if (!refMods) {
-                      throw new Error('Unable to reference mod data...');
                     }
 
                     for (let i = 0; i < refMods.length; i++) {
