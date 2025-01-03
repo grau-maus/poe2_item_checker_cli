@@ -53342,6 +53342,102 @@
                 }
             ]
         },
+        "%increasedFlaskLifeRecoveryrate": {
+            "tiers": [
+                5,
+                21,
+                35,
+                49,
+                63,
+                77
+            ],
+            "mods": [
+                {
+                    "itemLevel": 5,
+                    "oldDescription": "(5–10)% increased Flask Life Recovery rate",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            5,
+                            10
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 21,
+                    "oldDescription": "(11–16)% increased Flask Life Recovery rate",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            11,
+                            16
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 35,
+                    "oldDescription": "(17–22)% increased Flask Life Recovery rate",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            17,
+                            22
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 49,
+                    "oldDescription": "(23–28)% increased Flask Life Recovery rate",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            23,
+                            28
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 63,
+                    "oldDescription": "(29–34)% increased Flask Life Recovery rate",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            29,
+                            34
+                        ],
+                        "high": []
+                    }
+                },
+                {
+                    "itemLevel": 77,
+                    "oldDescription": "(35–40)% increased Flask Life Recovery rate",
+                    "isMultiMod": false,
+                    "ranges": {
+                        "hasSingleVal": true,
+                        "hasValues": true,
+                        "low": [
+                            35,
+                            40
+                        ],
+                        "high": []
+                    }
+                }
+            ]
+        },
         "%increasedFlaskManaRecoveryrate": {
             "tiers": [
                 5,
