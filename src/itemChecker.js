@@ -291,6 +291,8 @@ class ItemDataWatcher {
                               && itemModHighVal <= currModHighRangeHigh
                             )
                           )
+                        ) || (
+                          itemModLowVal === currModLowRangeLow
                         )
                       ) {
                         isCompared = true;
